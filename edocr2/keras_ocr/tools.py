@@ -438,6 +438,9 @@ def fit(
         resize_width = scale * image.shape[1]
     if fitted is None:
         resize_width, resize_height = map(int, [resize_width, resize_height])
+        # Ensure minimum dimensions of 1 pixel to prevent cv2.resize assertion failure
+        resize_width = max(1, resize_width)
+        resize_height = max(1, resize_height)
         if mode == "letterbox":
             fitted = np.zeros((height, width, 3), dtype="uint8") + cval
             image = cv2.resize(image, dsize=(resize_width, resize_height))

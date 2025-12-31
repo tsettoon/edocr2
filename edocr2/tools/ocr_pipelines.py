@@ -1,5 +1,6 @@
 import cv2, math, os
 import numpy as np
+_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def read_alphabet(keras_path):
     txt_path = os.path.splitext(keras_path)[0] + '.txt'
@@ -247,7 +248,7 @@ class Pipeline:
         from shapely.ops import unary_union
         mask_img = img.copy()
         old_dim, new_dimensions, boxes = [], [], []
-        folder_path = os.path.join('edocr2/tools/symbol_match', folder_code)
+        folder_path = os.path.join(_MODULE_DIR, 'symbol_match', folder_code)
         for dim in dimensions:
             #filter out dim wit diameter symbol:
             if char in dim[0]:
@@ -715,6 +716,10 @@ def find_outliers(counts, t):
                 # Filter the peaks based on 70% of the maximum value
                 mean = np.mean(counts)
                 std = np.std(counts)
+
+                # Handle uniform distribution (std=0) - no outliers possible
+                if std == 0:
+                    return np.array([])
 
                 # Calculate Z-scores
                 z_scores = (counts - mean) / std
